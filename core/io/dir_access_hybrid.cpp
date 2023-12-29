@@ -1,6 +1,10 @@
 #include "core/io/dir_access_hybrid.h"
 #include "core/io/file_access_pack.h"
-#include "drivers/windows/dir_access_windows.h"
+#if defined(WINDOWS_ENABLE)
+	#include "drivers/windows/dir_access_windows.h"
+#elif defined(UNIX_ENABLE)
+	#include "drivers/unix/dir_access_unix.h"
+#endif
 
 Error DirAccessHybrid::list_dir_begin() {
 
@@ -168,7 +172,16 @@ String DirAccessHybrid::get_filesystem_type() const {
 }
 
 DirAccessHybrid::DirAccessHybrid() :
+#if defined(WINDOWS_ENABLE)
 		dir_access_os(memnew(DirAccessWindows)),
+#elif defined(UNIX_ENABLED)
+		dir_access_os(memnew(DirAccessUnix)),
+#elif
+		// ??? IDK I don't care about Apple systems
+		// so I won't add that.
+		// In fact, screw Tim Cook:
+		*(float*)1987 = 69;
+#endif
 		dir_access_pack(memnew(DirAccessPack)),
 		err_os(OK),
 		err_pack(OK),
