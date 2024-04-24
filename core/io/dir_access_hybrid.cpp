@@ -1,6 +1,5 @@
 #include "core/io/dir_access_hybrid.h"
 #include "core/io/file_access_pack.h"
-#include "drivers/windows/dir_access_windows.h"
 
 Error DirAccessHybrid::list_dir_begin() {
 
@@ -167,12 +166,12 @@ String DirAccessHybrid::get_filesystem_type() const {
 	return dir_access_os->get_filesystem_type();
 }
 
-DirAccessHybrid::DirAccessHybrid() :
-		dir_access_os(memnew(DirAccessWindows)),
-		dir_access_pack(memnew(DirAccessPack)),
-		err_os(OK),
-		err_pack(OK),
-		cdir(false) {
+DirAccessHybrid::DirAccessHybrid(){
+		dir_access_os = DirAccess::create(AccessType::ACCESS_FILESYSTEM);
+		dir_access_pack = memnew(DirAccessPack);
+		err_os = OK;
+		err_pack = OK;
+		cdir = false;
 }
 
 DirAccessHybrid::~DirAccessHybrid() {
